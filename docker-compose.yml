@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: novo_projeto_apache
+    restart: unless-stopped
+    ports:
+      - "8050:80"
+    volumes:
+      - ./www:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - app_net
+
+  mysql:
+    image: mysql:8.0
+    container_name: novo_projeto_mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: novo_projeto
+      MYSQL_USER: novo_usuario
+      MYSQL_PASSWORD: "123456"
+    ports:
+      - "3360:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./www/projeto.sql:/docker-entrypoint-initdb.d/projeto.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - app_net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: novo_projeto_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8051:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - mysql
+    networks:
+      - app_net
+
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: novo_projeto_npm
+    restart: unless-stopped
+    ports:
+      # Porta pública HTTP gerenciada pelo proxy
+      - "80:80"
+      # Porta pública HTTPS gerenciada pelo proxy
+      - "443:443"
+      # Painel de administração do Nginx Proxy Manager
+      - "81:81"
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - app_net
+
+volumes:
+  mysql_data:
+  npm_data:
+  npm_letsencrypt:
+
+networks:
+  app_net:

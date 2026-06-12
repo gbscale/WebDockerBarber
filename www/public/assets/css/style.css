@@ -1,0 +1,424 @@
+/* ====================================
+   CONFIGURAÇÕES GERAIS
+==================================== */
+
+body{
+    background:#050505;
+}
+
+/* ====================================
+   SIDEBAR (PAINEL)
+==================================== */
+
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid #1f1f1f;
+    position:fixed;
+    top:0;
+    left:0;
+    overflow-y:auto;
+    z-index:999;
+}
+
+.sidebar-content{
+    padding:30px 20px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    color:#d8a35d;
+    font-size:28px;
+    font-weight:700;
+}
+
+.logo i{
+    font-size:28px;
+}
+
+.sidebar .nav-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    color:#ffffff;
+    padding:12px 15px;
+    border-radius:12px;
+    margin-bottom:10px;
+    transition:.3s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active{
+    background:#171717;
+    color:#d8a35d;
+}
+
+.sidebar .nav-link i{
+    font-size:18px;
+}
+
+.sidebar .logout{
+    color:#dc3545;
+}
+
+.sidebar .logout:hover{
+    background:#2b1010;
+    color:#ff6b6b;
+}
+
+/* ====================================
+   CONTEÚDO DO PAINEL
+==================================== */
+
+.main-content{
+    margin-left:250px;
+    padding:40px;
+    min-height:100vh;
+}
+
+/* ====================================
+   PAINEL DARK
+==================================== */
+
+/* ====================================
+   TABELAS DO PAINEL
+==================================== */
+
+.card{
+    background:#111 !important;
+    border:1px solid #222 !important;
+    border-radius:16px;
+}
+
+.table{
+    color:#fff !important;
+    margin-bottom:0;
+}
+
+.table thead th{
+    background:#161616;
+    color:#d8a35d;
+    border-color:#2a2a2a;
+    font-weight:600;
+}
+
+.table tbody tr{
+    background:#111;
+}
+
+.table tbody td{
+    color:#e5e5e5;
+    border-color:#2a2a2a;
+}
+
+.table-hover tbody tr:hover{
+    background:#1a1a1a;
+}
+
+.table tbody tr:hover td{
+    color:#fff;
+}
+
+
+/* ====================================
+   CARDS E TABELAS
+==================================== */
+
+.card{
+    background:#111111;
+    border:1px solid #1f1f1f !important;
+    border-radius:16px;
+}
+
+.card-body{
+    color:#ffffff;
+}
+
+.table{
+    color:#ffffff;
+    margin-bottom:0;
+}
+
+.table thead th{
+    color:#d8a35d;
+    border-bottom:1px solid #2a2a2a;
+}
+
+.table td{
+    border-color:#1f1f1f;
+}
+
+/* ====================================
+   NAVBAR SITE PÚBLICO
+==================================== */
+
+.navbar{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+
+    z-index:9999;
+    background:transparent !important;
+    padding:18px 0;
+}
+
+.navbar .container{
+    max-width:1200px;
+}
+
+.navbar-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    color:#ffffff !important;
+    text-decoration:none;
+
+    font-size:28px;
+    font-weight:700;
+}
+
+.navbar-brand img{
+    width:130px;
+    height:auto;
+}
+
+.navbar-brand i{
+    color:#ffffff;
+    font-size:24px;
+}
+
+.navbar-nav{
+    gap:25px;
+}
+
+.navbar .nav-link{
+    color:#ffffff !important;
+    font-weight:500;
+    padding:12px 14px;
+    transition:.3s;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active{
+    color:#d8a35d !important;
+}
+
+.navbar-toggler{
+    border:none;
+}
+
+.navbar-toggler:focus{
+    box-shadow:none;
+}
+
+/* ====================================
+   BOTÕES
+==================================== */
+
+.btn-nav-primary{
+    background:#d8a35d;
+    border:none;
+    color:#000;
+
+    font-weight:600;
+    padding:14px 28px;
+    border-radius:10px;
+
+    transition:.3s;
+}
+
+.btn-nav-primary:hover{
+    background:#c8944d;
+    color:#000;
+}
+
+.btn-nav-outline{
+    border:1px solid #ffffff;
+    color:#ffffff;
+
+    font-weight:600;
+    padding:14px 24px;
+    border-radius:10px;
+
+    transition:.3s;
+}
+
+.btn-nav-outline:hover{
+    background:#ffffff;
+    color:#000;
+}
+
+/* ====================================
+   BOTÕES DO PAINEL
+==================================== */
+
+.btn-primary{
+    background:#d8a35d;
+    border:none;
+    color:#000;
+    font-weight:600;
+}
+
+.btn-primary:hover{
+    background:#c8944d;
+    color:#000;
+}
+
+/* ====================================
+   HERO
+==================================== */
+
+.hero{
+    position:relative;
+    min-height:100vh;
+
+    background:url('../img/barber-banner.jpg');
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.65);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    color:#ffffff;
+}
+
+.hero-content h1{
+    max-width:700px;
+    margin-bottom:20px;
+
+    font-size:72px;
+    font-weight:700;
+}
+
+.hero-content p{
+    margin-bottom:30px;
+
+    font-size:24px;
+    color:#d9d9d9;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:15px;
+}
+
+/* ====================================
+   RESPONSIVO
+==================================== */
+
+@media (max-width:991px){
+
+    .navbar{
+        background:#050505 !important;
+    }
+
+    .navbar-collapse{
+        margin-top:20px;
+        text-align:center;
+    }
+
+    .navbar-nav{
+        gap:10px;
+    }
+
+    .btn-nav-primary{
+        width:100%;
+        margin-top:15px;
+    }
+
+    .main-content{
+        margin-left:0;
+        padding:20px;
+    }
+
+}
+
+@media (max-width:768px){
+
+    .hero-content h1{
+        font-size:42px;
+    }
+
+    .hero-content p{
+        font-size:18px;
+    }
+
+    .hero-buttons{
+        flex-direction:column;
+    }
+
+}
+/* =========================
+   TABELAS PAINEL DARK
+========================= */
+
+.main-content .card{
+    background:#111 !important;
+    border:1px solid #222 !important;
+}
+
+.main-content .table{
+    background:#111 !important;
+    color:#fff !important;
+}
+
+.main-content .table thead th{
+    background:#161616 !important;
+    color:#d8a35d !important;
+    border-color:#2a2a2a !important;
+}
+
+.main-content .table tbody tr{
+    background:#111 !important;
+}
+
+.main-content .table tbody td{
+    background:#111 !important;
+    color:#ffffff !important;
+    border-color:#2a2a2a !important;
+}
+
+.main-content .table-hover tbody tr:hover td{
+    background:#1b1b1b !important;
+}
+
+/* =========================
+   Inputs Dark
+========================= */
+
+.form-control,
+.form-select{
+    background:#181818 !important;
+    border:1px solid #2b2b2b !important;
+    color:#fff !important;
+    height:50px;
+}
+
+.form-control:focus,
+.form-select:focus{
+    background:#181818 !important;
+    color:#fff !important;
+    border-color:#d8a35d !important;
+    box-shadow:0 0 0 .2rem rgba(216,163,93,.15);
+}
+
+.form-control::placeholder{
+    color:#777;
+}

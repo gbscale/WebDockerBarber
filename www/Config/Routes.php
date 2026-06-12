@@ -1,0 +1,76 @@
+<?php
+
+return [
+
+    '/' => ['Home', 'index'],
+    '/home' => ['Home', 'index'],
+    '/projeto' => ['Home', 'index'],
+    '/projeto/' => ['Home', 'index'],
+    '/home/index' => ['Home', 'index'],
+    '/home/planos' => ['Home', 'planos'],
+    '/home/recursos' => ['Home', 'recursos'],
+    '/home/contato' => ['Home', 'contato'],
+    
+
+
+    '/cidades' => ['Cidades', 'index'],
+    '/cidades/new' => ['Cidades', 'new'],
+    '/cidades/index' => ['Cidades', 'index'],
+    '/cidades/edit/{id}' => ['Cidades', 'edit'],
+    '/cidades/delete/{id}' => ['Cidades', 'delete'],
+    '/cidades/save' => ['Cidades', 'save'],
+    '/cidades/edit_save' => ['Cidades', 'edit_save'],
+    '/cidades/search' => ['Cidades', 'search'],
+
+    '/categorias' => ['Categorias', 'index'],
+    '/categorias/new' => ['Categorias', 'new'],
+    '/categorias/index' => ['Categorias', 'index'],
+    '/categorias/edit/{id}' => ['Categorias', 'edit'],
+    '/categorias/delete/{id}' => ['Categorias', 'delete'],
+    '/categorias/save' => ['Categorias', 'save'],
+    '/categorias/edit_save' => ['Categorias', 'edit_save'],
+    '/categorias/search' => ['Categorias', 'search'],
+
+    '/usuarios' => ['Usuarios', 'index'],
+    '/usuarios/new' => ['Usuarios', 'new'],
+    '/usuarios/index' => ['Usuarios', 'index'],
+    '/usuarios/edit/{id}' => ['Usuarios', 'edit'],
+    '/usuarios/delete/{id}' => ['Usuarios', 'delete'],
+    '/usuarios/save' => ['Usuarios', 'save'],
+    '/usuarios/edit_save' => ['Usuarios', 'edit_save'],
+    '/usuarios/search' => ['Usuarios', 'search'],
+
+    '/login' => ['Login', 'index'],
+    '/login/index' => ['Login', 'index'],
+    '/login/auth' => ['Login', 'auth'],
+    '/login/logout' => ['Login', 'logout'],
+    
+    '/admin' => ['Admin', 'index'],
+    '/admin/usuarios' => ['Admin', 'usuarios'],
+    '/admin/barbearias' => ['Admin', 'barbearias'],
+    '/admin/planos' => ['Admin', 'planos'],
+    '/admin/financeiro' => ['Admin', 'financeiro'],
+    '/admin/configuracoes' => ['Admin', 'configuracoes'],
+        
+    '/dono' => ['Dono', 'index'],
+    '/dono/equipe' => ['Dono', 'equipe'],
+    '/dono/agenda' => ['Dono', 'agenda'],
+    '/dono/agenda/new' => ['Dono', 'agenda_new'],
+    '/dono/agenda/save' => ['Dono', 'agenda_save'],
+    '/dono/servicos' => ['Dono', 'servicos'],
+    '/dono/configuracoes' => ['Dono', 'configuracoes'],
+    '/dono/visagismo' => ['Dono', 'visagismo'],
+    '/dono/equipe/new' => ['Dono', 'equipe_new'],
+    '/dono/equipe/save' => ['Dono', 'equipe_save'],
+    '/dono/servicos/new' => ['Dono', 'servicos_new'],
+    '/dono/servicos/save' => ['Dono', 'servicos_save'],
+    
+    '/barbeiro' => ['Barbeiro', 'index'],
+    '/barbeiro/agenda' => ['Barbeiro', 'agenda'],
+    '/barbeiro/servicos' => ['Barbeiro', 'servicos'],
+    '/barbeiro/configuracoes' => ['Barbeiro', 'configuracoes'],
+    '/barbeiro/visagismo' => ['Barbeiro', 'visagismo'],
+
+    '/user' => ['User', 'index'],
+    '/user/index' => ['User', 'index'],
+];
