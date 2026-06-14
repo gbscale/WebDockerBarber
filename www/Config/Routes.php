@@ -66,10 +66,15 @@ return [
     '/dono/servicos/save' => ['Dono', 'servicos_save'],
     
     '/barbeiro' => ['Barbeiro', 'index'],
+    '/barbeiro/equipe' => ['Barbeiro', 'equipe'],
     '/barbeiro/agenda' => ['Barbeiro', 'agenda'],
+    '/barbeiro/agenda/new' => ['Barbeiro', 'agenda_new'],
+    '/barbeiro/agenda/save' => ['Barbeiro', 'agenda_save'],
     '/barbeiro/servicos' => ['Barbeiro', 'servicos'],
     '/barbeiro/configuracoes' => ['Barbeiro', 'configuracoes'],
     '/barbeiro/visagismo' => ['Barbeiro', 'visagismo'],
+    '/barbeiro/servicos/new' => ['Barbeiro', 'servicos_new'],
+    '/barbeiro/servicos/save' => ['Barbeiro', 'servicos_save'],
 
     '/user' => ['User', 'index'],
     '/user/index' => ['User', 'index'],

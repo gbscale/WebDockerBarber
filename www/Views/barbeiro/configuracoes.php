@@ -1,4 +1,3 @@
-
 <?php 
 if(isset($_SESSION['usuario_logado'])){
     if($_SESSION['usuario_logado']->cargo == 'barbeiro'){
