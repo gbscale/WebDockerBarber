@@ -25,9 +25,34 @@ class Barbeiro
     
     public function index()
     {
+        $barbearia_id = $_SESSION['usuario_logado']->barbearia_id;
+        $usuario_id = $_SESSION['usuario_logado']->id;
+
+        $dataSelecionada = $_GET['data'] ?? date('Y-m-d');
+
+        // Busca apenas os agendamentos do barbeiro logado
+        $agendamentos = $this->agendamentos->select(
+            null,
+            "barbearia_id = {$barbearia_id}
+            AND usuario_id = {$usuario_id}
+            AND data_agendamento = '{$dataSelecionada}'",
+            "hora_inicio ASC"
+        )->fetchAll(PDO::FETCH_OBJ);
+
+        // Total de cortes do dia
+        $totalCortes = count($agendamentos);
+
+        // Faturamento do dia
+        $faturamentoDia = 0;
+
+        foreach ($agendamentos as $agendamento) {
+            $faturamentoDia += (float) $agendamento->valor;
+        }
+
         require 'Views/barbeiro/index.php';
     }
-
+        
+    
     public function agenda()
     {
         if (
@@ -194,9 +219,46 @@ class Barbeiro
 
     public function configuracoes()
     {
+        $usuario = $this->usuarios
+            ->select(
+                null,
+                "id = {$_SESSION['usuario_logado']->id}"
+            )
+            ->fetch(PDO::FETCH_OBJ);
+
         require 'Views/barbeiro/configuracoes.php';
     }
 
+    public function configuracoes_save()
+    {
+        $request = $_POST;
+
+        $dados = [
+
+            'nome' => trim($request['nome']),
+            'email' => trim($request['email']),
+            'telefone' => trim($request['telefone']),
+            'atende_clientes' => $request['atende_clientes'],
+            'agenda_ativa' => $request['agenda_ativa']
+        ];
+
+        if (!empty($request['senha'])) {
+            $dados['senha'] = md5($request['senha']);
+        }
+
+        $this->usuarios->update(
+            "id = {$_SESSION['usuario_logado']->id}",
+            $dados
+        );
+
+        $_SESSION['msg'] = [
+            'texto' => 'Configurações atualizadas com sucesso!',
+            'color' => 'success'
+        ];
+
+        header('Location: ' . base_url('barbeiro/configuracoes'));
+        exit;
+    }
     public function visagismo()
     {
         require 'Views/barbeiro/visagismo.php';

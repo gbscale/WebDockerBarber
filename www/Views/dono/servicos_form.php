@@ -66,7 +66,7 @@ if(isset($_SESSION['usuario_logado'])){
 
                         <input
                             type="text"
-                            name="preco"
+                            name="valor"
                             class="form-control">
 
                     </div>

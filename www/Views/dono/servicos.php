@@ -5,23 +5,26 @@ if(isset($_SESSION['usuario_logado'])){
 
 <div class="main-content">
 
-    <div class="d-flex justify-content-between mb-4">
+    <div class="mb-4">
 
-        <div>
+        <h1 class="text-white">
+            Serviços
+        </h1>
 
-            <h1 class="text-white">
-                Serviços
-            </h1>
+        <p class="text-secondary">
+            Gerencie os serviços da barbearia.
+        </p>
 
-            <p class="text-secondary">
-                Gerencie os serviços da barbearia.
-            </p>
+    </div>
 
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <a
-            href="<?= base_url('dono/servicos/new') ?>"
-            class="btn btn-primary">
+        <h5 class="text-white mb-0">
+            Todos os serviços
+        </h5>
+
+        <a href="<?= base_url('dono/servicos/new') ?>"
+           class="btn btn-primary">
 
             <i class="bi bi-plus-circle"></i>
             Novo Serviço
@@ -30,12 +33,11 @@ if(isset($_SESSION['usuario_logado'])){
 
     </div>
 
-    <div class="card">
+    <div class="card border-0 shadow-sm">
 
         <div class="card-body">
 
-            <table class="table table-hover">
-
+            <table class="table table-hover align-middle mb-0">
                 <thead>
 
                     <tr>
@@ -65,7 +67,7 @@ if(isset($_SESSION['usuario_logado'])){
                                 </td>
 
                                 <td>
-                                    R$ <?= number_format($servico->preco, 2, ',', '.') ?>
+                                    R$ <?= number_format($servico->valor, 2, ',', '.') ?>
                                 </td>
 
                                 <td>

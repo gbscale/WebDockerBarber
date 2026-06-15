@@ -13,6 +13,7 @@ class Dono
     private $usuarios;
     private $servicos;
     private $agendamentos;
+    private $barbearias;
 
 
     public function __construct()
@@ -20,11 +21,97 @@ class Dono
         $this->usuarios = new Conexao('usuarios');
         $this->servicos = new Conexao('servicos');
         $this->agendamentos = new Conexao('agendamentos');
+        $this->barbearias = new Conexao('barbearias');
 
     }
     
-    public function index()
+   public function index()
     {
+        $barbearia_id = $_SESSION['usuario_logado']->barbearia_id;
+
+        $dataSelecionada = $_GET['data'] ?? date('Y-m-d');
+        $mesAtual = date('Y-m');
+
+        // Agendamentos do dia
+        $agendamentos = $this->agendamentos
+            ->select(
+                null,
+                "barbearia_id = {$barbearia_id}
+                AND data_agendamento = '{$dataSelecionada}'",
+                "hora_inicio ASC"
+            )
+            ->fetchAll(PDO::FETCH_OBJ);
+
+        foreach ($agendamentos as $agendamento) {
+
+            $barbeiro = $this->usuarios
+                ->select(null, "id = {$agendamento->usuario_id}")
+                ->fetch(PDO::FETCH_OBJ);
+
+            $servico = $this->servicos
+                ->select(null, "id = {$agendamento->servico_id}")
+                ->fetch(PDO::FETCH_OBJ);
+
+            $agendamento->barbeiro_nome = $barbeiro->nome ?? '-';
+            $agendamento->servico_nome = $servico->nome ?? '-';
+        }
+
+        // Total de agendamentos
+        $totalAgendamentos = count($agendamentos);
+
+        // Faturamento do dia
+        $faturamentoHoje = 0;
+
+        foreach ($agendamentos as $agendamento) {
+            $faturamentoHoje += (float) $agendamento->valor;
+        }
+
+        // Clientes atendidos
+        $clientes = [];
+
+        foreach ($agendamentos as $agendamento) {
+            $clientes[] = $agendamento->cliente_telefone;
+        }
+
+        $clientesAtendidos = count(array_unique($clientes));
+
+        // Barbeiros ativos
+        $barbeiros = $this->usuarios
+            ->select(
+                null,
+                "barbearia_id = {$barbearia_id}
+                AND cargo = 'barbeiro'
+                AND status = 1"
+            )
+            ->fetchAll(PDO::FETCH_OBJ);
+
+        $barbeirosAtivos = count($barbeiros);
+
+        // Faturamento do mês
+        $agendamentosMes = $this->agendamentos
+            ->select(
+                null,
+                "barbearia_id = {$barbearia_id}
+                AND data_agendamento LIKE '{$mesAtual}%'"
+            )
+            ->fetchAll(PDO::FETCH_OBJ);
+
+        $faturamentoMes = 0;
+
+        foreach ($agendamentosMes as $agendamento) {
+            $faturamentoMes += (float) $agendamento->valor;
+        }
+
+        // Ticket médio
+        $ticketMedio = $totalAgendamentos > 0
+            ? $faturamentoHoje / $totalAgendamentos
+            : 0;
+
+        // Valores temporários
+        $servicoMaisVendido = 'Em desenvolvimento';
+        $taxaOcupacao = 0;
+        $rankingBarbeiros = [];
+
         require 'Views/dono/index.php';
     }
 
@@ -193,7 +280,7 @@ class Dono
 
             'hora_fim' => $hora_fim,
 
-            'valor' => $servico->preco,
+            'valor' => $servico->valor,
 
             'observacoes' => trim($request['observacoes']),
 
@@ -260,7 +347,7 @@ class Dono
 
             'duracao' => (int)$requests['duracao'],
 
-            'preco' => str_replace(',', '.', $requests['preco']),
+            'valor' => str_replace(',', '.', $requests['valor']),
 
             'status' => 1,
 
@@ -275,7 +362,64 @@ class Dono
 
     public function configuracoes()
     {
+        $usuario = $this->usuarios
+            ->select(
+                null,
+                "id = {$_SESSION['usuario_logado']->id}"
+            )
+            ->fetch(PDO::FETCH_OBJ);
+
+        $barbearia = $this->barbearias
+            ->select(
+                null,
+                "id = {$_SESSION['usuario_logado']->barbearia_id}"
+            )
+            ->fetch(PDO::FETCH_OBJ);
+
         require 'Views/dono/configuracoes.php';
+    }
+
+    public function configuracoes_save()
+    {
+        $request = $_POST;
+
+        $dadosBarbearia = [
+
+            'nome' => trim($request['nome_barbearia']),
+            'telefone' => trim($request['telefone_barbearia']),
+            'email' => trim($request['email_barbearia'])
+
+        ];
+
+        $this->barbearias->update(
+            "id = {$_SESSION['usuario_logado']->barbearia_id}",
+            $dadosBarbearia
+        );
+
+        $dadosUsuario = [
+
+            'nome' => trim($request['nome']),
+            'email' => trim($request['email']),
+            'telefone' => trim($request['telefone'])
+
+        ];
+
+        if (!empty($request['senha'])) {
+            $dadosUsuario['senha'] = md5($request['senha']);
+        }
+
+        $this->usuarios->update(
+            "id = {$_SESSION['usuario_logado']->id}",
+            $dadosUsuario
+        );
+
+        $_SESSION['msg'] = [
+            'texto' => 'Configurações atualizadas com sucesso!',
+            'color' => 'success'
+        ];
+
+        header('Location: ' . base_url('dono/configuracoes'));
+        exit;
     }
 
     public function visagismo()
