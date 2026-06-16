@@ -11,7 +11,7 @@
 
     <div id="model-status" class="alert alert-info bg-dark text-info border-info border-opacity-25 mb-4 text-center">
         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-        <span>Carregando inteligência artificial dos arquivos locais...</span>
+        <span>Carregando inteligência artificial dos arquivos locais no Docker...</span>
     </div>
 
     <div class="row g-4">
@@ -59,25 +59,46 @@
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
 
 <script>
-const PASTA_MODELOS = '<?= base_url("public/models") ?>';
+// Rota absoluta amarrada na porta correta do seu ambiente Docker
+const PASTA_MODELOS = 'http://localhost:8050/public/models';
 
 async function carregarModelosIA() {
     try {
-        // Carrega os arquivos locais da sua pasta www/public/models
+        // Busca os modelos de 4.0M diretamente da URL estática mapeada no Docker
         await faceapi.nets.ssdMobilenetv1.loadFromUri(PASTA_MODELOS);
         await faceapi.nets.faceLandmark68Net.loadFromUri(PASTA_MODELOS);
         
+        // Se encontrar os arquivos de peso sem erro de esqueleto (tensor)
         document.getElementById('model-status').className = "alert alert-success bg-dark text-success border-success border-opacity-25 mb-4 text-center";
         document.getElementById('model-status').innerHTML = '<i class="bi bi-shield-check-fill me-2"></i>IA Local Pronta (Carregamento Instantâneo)!';
         document.getElementById('btn-upload-label').classList.remove('disabled');
         document.getElementById('foto_cliente').removeAttribute('disabled');
     } catch (error) {
         console.error("Erro ao carregar os modelos locais:", error);
-        document.getElementById('model-status').className = "alert alert-danger bg-dark text-danger border-danger border-opacity-25 mb-4 text-center";
-        document.getElementById('model-status').innerText = "Erro: Certifique-se de que os arquivos do modelo estão na pasta public/models/.";
+        
+        // Plano B Automático: se o Docker bloquear a rota por alguma diretiva local, ele busca do CDN estável
+        console.log("Tentando carregamento via CDN reserva...");
+        tentarCarregamentoReserva();
     }
 }
 
+async function tentarCarregamentoReserva() {
+    try {
+        const cdnReserva = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
+        await faceapi.nets.ssdMobilenetv1.loadFromUri(cdnReserva);
+        await faceapi.nets.faceLandmark68Net.loadFromUri(cdnReserva);
+        
+        document.getElementById('model-status').className = "alert alert-success bg-dark text-success border-success border-opacity-25 mb-4 text-center";
+        document.getElementById('model-status').innerHTML = '<i class="bi bi-cloud-check-fill me-2"></i>IA Ativa via Nuvem Seguro!';
+        document.getElementById('btn-upload-label').classList.remove('disabled');
+        document.getElementById('foto_cliente').removeAttribute('disabled');
+    } catch (e) {
+        document.getElementById('model-status').className = "alert alert-danger bg-dark text-danger border-danger border-opacity-25 mb-4 text-center";
+        document.getElementById('model-status').innerText = "Erro crítico: Os arquivos locais de 4.0M não foram encontrados no Docker.";
+    }
+}
+
+// Inicializa o processo assim que o DOM estiver pronto
 window.addEventListener('DOMContentLoaded', carregarModelosIA);
 
 async function processarVisagismoReal(input) {
@@ -92,7 +113,7 @@ async function processarVisagismoReal(input) {
         <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-5">
             <div class="spinner-border text-warning mb-3" role="status"></div>
             <h5 class="text-white">IA Analisando Localmente...</h5>
-            <p class="text-warning small mb-0">Processando matriz de pixels via hardware.</p>
+            <p class="text-warning small mb-0">Processando pontos faciais via hardware.</p>
         </div>
     `;
 
@@ -166,7 +187,7 @@ function enviarAoPHP(formato) {
         `;
     })
     .catch(error => {
-        console.error("Erro na requisição AJAX:", error);
+        console.error("Erro na requisição AJAX ao PHP:", error);
     });
 }
 </script>
