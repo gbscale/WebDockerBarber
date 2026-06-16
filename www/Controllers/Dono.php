@@ -286,40 +286,98 @@ class Dono
         }
 
         $barbearia_id = $_SESSION['usuario_logado']->barbearia_id;
+        
+        // Pega a data pelo link/filtro ou assume HOJE se não tiver nada selecionado
+        $dataFiltro = $_GET['data'] ?? date('Y-m-d');
 
+        // Busca apenas os agendamentos DA BARBEARIA e DA DATA SELECIONADA
         $agendamentos = $this->agendamentos->select(
             null,
-            "barbearia_id = {$barbearia_id}",
-            "data_agendamento DESC, hora_inicio ASC"
+            "barbearia_id = {$barbearia_id} AND data_agendamento = '{$dataFiltro}'",
+            "hora_inicio ASC"
         )->fetchAll(PDO::FETCH_OBJ);
+
+        // Prepara e limpa os dados antes de mandar para o HTML
+        foreach ($agendamentos as $agendamento) {
+            
+            // Busca o barbeiro com segurança
+            $barbeiro = $this->usuarios
+                ->select(null, "id = {$agendamento->usuario_id}")
+                ->fetch(PDO::FETCH_OBJ);
+            
+            // Busca o serviço com segurança
+            $servico = $this->servicos
+                ->select(null, "id = {$agendamento->servico_id}")
+                ->fetch(PDO::FETCH_OBJ);
+
+            // Se não achar o nome (se foi deletado do banco), assume um texto padrão em vez de quebrar a tela
+            $agendamento->barbeiro_nome = $barbeiro->nome ?? 'Não encontrado';
+            $agendamento->servico_nome = $servico->nome ?? 'Não encontrado';
+            
+            // Garante que a observação nunca seja nula para o htmlspecialchars não chiar
+            $agendamento->observacoes = $agendamento->observacoes ?? '';
+        }
 
         $data = [];
         $data['pagina'] = 'Agenda';
+        $data['dataFiltro'] = $dataFiltro; // Manda a data atual do filtro para a View saber qual exibir no input
         $data['agendamentos'] = $agendamentos;
 
         require 'Views/dono/agenda.php';
     }
     public function agenda_new()
     {
-        $data = [];
-
         $barbearia_id = $_SESSION['usuario_logado']->barbearia_id;
 
         $data['barbeiros'] = $this->usuarios
-            ->select(null,
-                "barbearia_id = {$barbearia_id}
-                AND cargo = 'barbeiro'
-                AND status = 1")
+            ->select(null, "barbearia_id = {$barbearia_id} AND cargo = 'barbeiro' AND status = 1")
             ->fetchAll(PDO::FETCH_CLASS);
 
         $data['servicos'] = $this->servicos
-            ->select(null,
-                "barbearia_id = {$barbearia_id}
-                AND status = 1")
+            ->select(null, "barbearia_id = {$barbearia_id} AND status = 1")
             ->fetchAll(PDO::FETCH_CLASS);
 
-        extract($data);
+        // Lógica para carregar horários disponíveis via AJAX/Requisição de tela
+        $barbeiro_id = $_GET['barbeiro_id'] ?? null;
+        $data_busca = $_GET['data'] ?? null;
+        $horarios_disponiveis = [];
 
+        if ($barbeiro_id && $data_busca) {
+            // Defina o intervalo padrão de atendimento da barbearia (ex: 08:00 às 19:00)
+            $inicio = strtotime('08:00');
+            $fim = strtotime('19:00');
+            $intervalo = 30 * 60; // Slots de 30 em 30 minutos
+
+            // Busca os agendamentos já ocupados daquele barbeiro naquele dia
+            $ocupados = $this->agendamentos
+                ->select(null, "usuario_id = {$barbeiro_id} AND data_agendamento = '{$data_busca}' AND status <> 'cancelado'")
+                ->fetchAll(PDO::FETCH_OBJ);
+
+            // Filtra os horários livres
+            for ($i = $inicio; $i < $fim; $i += $intervalo) {
+                $hora_atual = date('H:i', $i);
+                $esta_ocupado = false;
+
+                foreach ($ocupados as $agendamento) {
+                    // Verifica se o slot atual cai dentro do intervalo de algum agendamento existente
+                    if ($hora_atual >= date('H:i', strtotime($agendamento->hora_inicio)) && 
+                        $hora_atual < date('H:i', strtotime($agendamento->hora_fim))) {
+                        $esta_ocupado = true;
+                        break;
+                    }
+                }
+
+                if (!$esta_ocupado) {
+                    $horarios_disponiveis[] = $hora_atual;
+                }
+            }
+        }
+
+        $data['horarios_disponiveis'] = $horarios_disponiveis;
+        $data['barbeiro_selecionado'] = $barbeiro_id;
+        $data['data_selecionada'] = $data_busca;
+
+        extract($data);
         require 'Views/dono/agenda_form.php';
     }
 
@@ -327,64 +385,59 @@ class Dono
     {
         $request = $_POST;
 
-        // pega serviço
-        $servico = $this->servicos->select(
+        // Pega os dados do serviço para calcular a duração e valor correto
+        $servico = $this->servicos->select(null, "id = {$request['servico_id']}")->fetch(PDO::FETCH_OBJ);
+        $hora_inicio = $request['hora_inicio'];
+        $hora_fim = date('H:i', strtotime("+{$servico->duracao} minutes", strtotime($hora_inicio)));
+        $data_agendamento = $request['data_agendamento'];
+        $barbeiro_id = $request['barbeiro_id'];
+
+        // TRAVA DE SEGURANÇA: Verifica se o horário foi ocupado no milissegundo anterior
+        $conflito = $this->agendamentos->select(
             null,
-            "id = {$request['servico_id']}"
+            "usuario_id = {$barbeiro_id} 
+            AND data_agendamento = '{$data_agendamento}' 
+            AND status <> 'cancelado'
+            AND (
+                ('{$hora_inicio}' >= hora_inicio AND '{$hora_inicio}' < hora_fim) OR 
+                ('{$hora_fim}' > hora_inicio AND '{$hora_fim}' <= hora_fim)
+            )"
         )->fetch(PDO::FETCH_OBJ);
 
-        $hora_inicio = $request['hora_inicio'];
-
-        // calcula hora fim automaticamente
-        $hora_fim = date(
-            'H:i',
-            strtotime("+{$servico->duracao} minutes", strtotime($hora_inicio))
-        );
-
-        $agendamento = [
-
-            'barbearia_id' => $_SESSION['usuario_logado']->barbearia_id,
-
-            'usuario_id'   => $request['barbeiro_id'],
-
-            'servico_id'   => $request['servico_id'],
-
-            'cliente_nome' => trim($request['cliente_nome']),
-
-            'cliente_telefone' => trim($request['cliente_telefone']),
-
-            'data_agendamento' => $request['data_agendamento'],
-
-            'hora_inicio' => $hora_inicio,
-
-            'hora_fim' => $hora_fim,
-
-            'valor' => $servico->valor,
-
-            'observacoes' => trim($request['observacoes']),
-
-            'status' => 'agendado'
-        ];
-
-        if($this->agendamentos->insert($agendamento)){
-
+        if ($conflito) {
             $_SESSION['msg'] = [
-                'texto' => 'Agendamento criado com sucesso!',
-                'color' => 'success'
+                'texto' => 'Ops! Esse horário acabou de ser preenchido. Escolha outro.',
+                'color' => 'danger'
             ];
-
-            header('Location: '.base_url('dono/agenda'));
+            header('Location: ' . base_url("dono/agenda/new?barbeiro_id={$barbeiro_id}&data={$data_agendamento}"));
             exit;
         }
 
-        $_SESSION['msg'] = [
-            'texto' => 'Erro ao criar agendamento.',
-            'color' => 'danger'
+        $agendamento = [
+            'barbearia_id'     => $_SESSION['usuario_logado']->barbearia_id,
+            'usuario_id'       => $barbeiro_id,
+            'servico_id'       => $request['servico_id'],
+            'cliente_nome'     => trim($request['cliente_nome']),
+            'cliente_telefone' => trim($request['cliente_telefone']),
+            'data_agendamento' => $data_agendamento,
+            'hora_inicio'      => $hora_inicio,
+            'hora_fim'         => $hora_fim,
+            'valor'            => $servico->valor,
+            'observacoes'      => trim($request['observacoes']),
+            'status'           => 'agendado'
         ];
 
-        header('Location: '.base_url('dono/agenda/new'));
+        if ($this->agendamentos->insert($agendamento)) {
+            $_SESSION['msg'] = ['texto' => 'Agendamento criado com sucesso!', 'color' => 'success'];
+            header('Location: ' . base_url('dono/agenda'));
+            exit;
+        }
+
+        $_SESSION['msg'] = ['texto' => 'Erro ao criar agendamento.', 'color' => 'danger'];
+        header('Location: ' . base_url('dono/agenda/new'));
         exit;
     }
+    
     public function servicos()
     {
         if (
