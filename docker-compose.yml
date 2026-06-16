@@ -61,11 +61,11 @@ services:
     container_name: novo_projeto_npm
     restart: unless-stopped
     ports:
-      # Porta pública HTTP gerenciada pelo proxy
+
       - "80:80"
-      # Porta pública HTTPS gerenciada pelo proxy
+
       - "443:443"
-      # Painel de administração do Nginx Proxy Manager
+
       - "81:81"
     volumes:
       - npm_data:/data
@@ -80,3 +80,4 @@ volumes:
 
 networks:
   app_net:
+    driver: bridge

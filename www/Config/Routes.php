@@ -67,8 +67,9 @@ return [
     '/barbeiro/servicos' => ['Barbeiro', 'servicos'],
     '/barbeiro/configuracoes' => ['Barbeiro', 'configuracoes'],
     '/barbeiro/configuracoes/save' => ['Barbeiro', 'configuracoes_save'],
-    '/barbeiro/visagismo' => ['Barbeiro', 'visagismo'],
     '/barbeiro/servicos/new' => ['Barbeiro', 'servicos_new'],
     '/barbeiro/servicos/save' => ['Barbeiro', 'servicos_save'],
+    '/barbeiro/visagismo' => ['Barbeiro', 'visagismo'],
+    '/barbeiro/visagismo_analisar' => ['Barbeiro', 'visagismo_analisar'],
 
 ];

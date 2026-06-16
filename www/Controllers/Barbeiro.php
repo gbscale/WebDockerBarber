@@ -178,6 +178,50 @@ class Barbeiro
 
     public function visagismo()
     {
+        // Certifique-se de validar a sessão aqui se necessário
         require 'Views/barbeiro/visagismo.php';
     }
+
+    public function visagismo_analisar()
+    {
+        // Força o cabeçalho JSON antes de qualquer resposta
+        header('Content-Type: application/json');
+
+        // O PHP recebe o veredito REAL processado pela IA lá no navegador
+        $formatoDetectado = $_POST['formato_rosto'] ?? 'Oval';
+
+        $iaResultados = [
+            'Quadrado' => [
+                'formato_rosto' => 'Rosto Quadrado (Linhas Marcantes)',
+                'corte_recomendado' => 'Cortes com volume no topo e laterais mais baixas (como Undercut ou Pompadour) para suavizar os ângulos rígidos do maxilar.',
+                'barba_recomendada' => 'Barba Tradicional ou no estilo Espartana, mantendo as laterais ralas e o queixo mais alongado/pontiagudo.'
+            ],
+            'Oval' => [
+                'formato_rosto' => 'Rosto Oval (Simetria Harmônica)',
+                'corte_recomendado' => 'Formato altamente versátil. Recomendado cortes Fade (Degradê) limpos, Buzz Cut (Raspado) ou cortes clássicos repartidos.',
+                'barba_recomendada' => 'Qualquer estilo se adapta bem. Uma barba por fazer ou barba cheia bem desenhada valoriza os traços naturais.'
+            ],
+            'Redondo' => [
+                'formato_rosto' => 'Rosto Redondo (Curvas Suaves)',
+                'corte_recomendado' => 'Cortes angulares e com textura alta (como o Faux Hawk ou Quiff espetado) para criar a ilusão de um rosto mais comprido.',
+                'barba_recomendada' => 'Barba mais comprida no queixo (estilo Lenhador) e bem raspada nas bochechas para alongar e afinar o semblante.'
+            ],
+            'Coração' => [
+                'formato_rosto' => 'Rosto Coração / Triangular',
+                'corte_recomendado' => 'Cortes de comprimento médio nas laterais com franja caída ou volume texturizado para equilibrar a testa mais larga.',
+                'barba_recomendada' => 'Barba cheia tradicional. O volume nas bochechas e no maxilar é ideal para preencher o queixo estreito.'
+            ],
+            'Retangular' => [
+                'formato_rosto' => 'Rosto Retangular / Longo',
+                'corte_recomendado' => 'Cortes com franja jogada para o lado ou que distribuam o volume uniformemente pelas laterais para não alongar ainda mais a face.',
+                'barba_recomendada' => 'Barba cheia nas laterais e mais curta na base do queixo, equilibrando a altura vertical do rosto.'
+            ]
+        ];
+
+        $resposta = $iaResultados[$formatoDetectado] ?? $iaResultados['Oval'];
+
+        echo json_encode($resposta);
+        exit;
+    }
+    
 }
