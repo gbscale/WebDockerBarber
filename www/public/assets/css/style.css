@@ -403,12 +403,19 @@ body{
    Inputs Dark
 ========================= */
 
-.form-control,
+.form-control:not(textarea),
 .form-select{
     background:#181818 !important;
     border:1px solid #2b2b2b !important;
     color:#fff !important;
     height:50px;
+}
+
+.form-control,
+.form-select{
+    background:#181818 !important;
+    border:1px solid #2b2b2b !important;
+    color:#fff !important;
 }
 
 .form-control:focus,
@@ -421,4 +428,169 @@ body{
 
 .form-control::placeholder{
     color:#777;
+}
+
+/* ====================================
+   AJUSTE DE ESTRUTURA (PREVINE O ATROPELAMENTO DA NAVBAR)
+==================================== */
+
+.contact-hero {
+    /* Aumentamos o padding superior para 220px. 
+       Isso empurra o título para baixo do seu menu fixo */
+    padding: 220px 0 60px;
+    background: #050505;
+    color: #ffffff;
+    text-align: center;
+}
+
+.contact-badge {
+    display: inline-block;
+    color: #d8a35d;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.contact-hero h1 {
+    font-size: 56px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #ffffff !important;
+}
+
+.contact-hero p {
+    max-width: 600px;
+    margin: 0 auto;
+    color: #b3b3b3; /* Um cinza mais claro para dar leitura */
+    font-size: 18px;
+}
+
+/* ====================================
+   SEÇÃO DE CONTATO E CARDS VISÍVEIS
+==================================== */
+
+.contact-section {
+    padding: 20px 0 120px; /* Aumentamos o espaçamento inferior para empurrar o footer para baixo */
+    background: #050505;
+}
+
+/* Forçando o card a ter fundo para não sumir na tela */
+.contact-card {
+    background: #121212 !important; /* Cor sólida para destacar do fundo #050505 */
+    border: 1px solid #222222 !important;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); /* Dá profundidade */
+}
+
+.contact-card h3 {
+    color: #ffffff !important;
+    margin-bottom: 35px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Ícones e Informações da Esquerda (Garantindo Visibilidade) */
+.contact-item {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 35px;
+    align-items: flex-start;
+}
+
+.contact-item i {
+    color: #d8a35d !important; /* Dourado bem vivo para os ícones aparecerem */
+    font-size: 24px;
+    min-width: 24px;
+}
+
+.contact-item strong {
+    display: block;
+    color: #ffffff !important; /* Títulos em branco puro */
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.contact-item p {
+    margin: 0;
+    color: #a6a6a6 !important; /* Texto cinza claro legível */
+}
+
+/* ====================================
+   FORMULÁRIO (INPUTS PREMIUM DARK)
+==================================== */
+
+.contact-card .form-control {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333333 !important;
+    color: #ffffff !important;
+    border-radius: 10px;
+    padding: 14px 18px;
+}
+
+.contact-card .form-control::placeholder {
+    color: #777777 !important; /* placeholder visível */
+}
+
+.contact-card .form-control:focus {
+    background-color: #222222 !important;
+    border-color: #d8a35d !important;
+    box-shadow: 0 0 0 0.25rem rgba(216, 163, 93, 0.2) !important;
+}
+
+.contact-textarea {
+    min-height: 140px !important;
+    resize: vertical;
+}
+
+.contact-card .form-control:not(textarea) {
+    height: 52px;
+}
+
+/* Botão de Enviar */
+.contact-card .btn-primary {
+    background-color: #d8a35d !important;
+    border-color: #d8a35d !important;
+    color: #050505 !important;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 10px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.contact-card .btn-primary:hover {
+    background-color: #e5b87b !important;
+    transform: translateY(-2px);
+}
+
+/* Checkbox */
+.contact-card .form-check-input {
+    background-color: #1a1a1a;
+    border-color: #333333;
+}
+.contact-card .form-check-input:checked {
+    background-color: #d8a35d;
+    border-color: #d8a35d;
+}
+
+/* ====================================
+   RODAPÉ E RESPONSIVIDADE
+==================================== */
+
+footer, .footer, .copyright {
+    margin-top: 0px !important; /* Deixamos o padding da contact-section controlar o espaço */
+}
+
+@media (max-width: 768px) {
+    .contact-hero {
+        padding: 160px 0 40px;
+    }
+    .contact-hero h1 {
+        font-size: 36px;
+    }
+    .contact-card {
+        padding: 25px;
+    }
 }

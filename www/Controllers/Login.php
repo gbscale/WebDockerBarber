@@ -16,6 +16,8 @@ class Login {
     }
 
     public function index(){
+
+        $classeBody = 'auth-page';
         return view('login/index');
     }
 

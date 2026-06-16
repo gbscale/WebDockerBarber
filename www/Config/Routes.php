@@ -63,7 +63,11 @@ return [
     '/dono/visagismo' => ['Dono', 'visagismo'],
     '/dono/equipe/new' => ['Dono', 'equipe_new'],
     '/dono/equipe/save' => ['Dono', 'equipe_save'],
+    '/dono/equipe/edit' => ['Dono', 'equipe_edit'],
+    '/dono/equipe/update' => ['Dono', 'equipe_update'],
     '/dono/servicos/new' => ['Dono', 'servicos_new'],
+    '/dono/servicos/edit' => ['Dono', 'servicos_edit'],
+    '/dono/servicos/update' => ['Dono', 'servicos_update'],
     '/dono/servicos/save' => ['Dono', 'servicos_save'],
     
     '/barbeiro' => ['Barbeiro', 'index'],

@@ -1,53 +1,123 @@
-  <!-- Cabeçalho -->
-  <header class="bg-dark text-white text-center py-5">
-      <div class="container">
-        <h1 class="display-4">Fale Conosco</h1>
-        <p class="lead">Estamos aqui para ajudar você a vender seu carro com agilidade e seriedade.</p>
-      </div>
-    </header>
+<header class="contact-hero">
+    <div class="container text-center">
+        <span class="contact-badge">FALE CONOSCO</span>
 
-    <!-- Seção de Contato -->
-    <section class="py-5">
-      <div class="container">
-        <div class="row">
-          <!-- Informações de Contato -->
-          <div class="col-md-6">
-            <h2>Informações de Contato</h2>
-            <p><strong>Endereço:</strong> Ceres - GO</p>
-            <p><strong>Telefone:</strong> <a href="tel:+5562999999999">(62) 99999-9999</a></p>
-            <p><strong>Email:</strong> <a href="mailto:contato@bargaincar.com.br">contato@bargaincar.com.br</a></p>
-            <p><strong>WhatsApp:</strong> <a href="https://api.whatsapp.com/send?phone=5562999999999" target="_blank">(62) 99999-9999</a></p>
-            <p><strong>Redes Sociais:</strong></p>
-            <ul class="list-unstyled">
-              <li><a href="#" target="_blank">Facebook</a></li>
-              <li><a href="#" target="_blank">Instagram</a></li>
-            </ul>
-          </div>
-          <!-- Formulário de Contato -->
-          <div class="col-md-6">
-            <h2>Envie uma Mensagem</h2>
-            <form>
-              <div class="mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" placeholder="Seu nome">
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">E-mail</label>
-                <input type="email" class="form-control" id="email" placeholder="seuemail@exemplo.com">
-              </div>
-              <div class="mb-3">
-                <label for="mensagem" class="form-label">Mensagem</label>
-                <textarea class="form-control" id="mensagem" rows="5" placeholder="Escreva sua mensagem aqui..."></textarea>
-              </div>
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="politicaPrivacidade">
-                <label class="form-check-label" for="politicaPrivacidade">
-                  Eu aceito a <a href="#">Política de Privacidade</a>
-                </label>
-              </div>
-              <button type="submit" class="btn btn-primary">Enviar</button>
-            </form>
-          </div>
+        <h1>Agende seu estilo</h1>
+
+        <p>
+            Tire suas dúvidas, agende seu horário ou fale com nossa equipe.
+        </p>
+    </div>
+</header>
+
+<section class="contact-section">
+    <div class="container">
+
+        <div class="row g-4">
+
+            <div class="col-lg-5">
+
+                <div class="contact-card h-100">
+
+                    <h3>Informações</h3>
+
+                    <div class="contact-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                        <div>
+                            <strong>Endereço</strong>
+                            <p>Ceres - GO</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="bi bi-telephone-fill"></i>
+
+                        <div>
+                            <strong>Telefone</strong>
+                            <p>(62) 99999-9999</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="bi bi-envelope-fill"></i>
+
+                        <div>
+                            <strong>E-mail</strong>
+                            <p>contato@easybarber.com.br</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="bi bi-clock-fill"></i>
+
+                        <div>
+                            <strong>Horário</strong>
+                            <p>Segunda a Sábado • 09h às 20h</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-7">
+
+                <div class="contact-card">
+
+                    <h3>Envie uma mensagem</h3>
+
+                    <form>
+
+                        <div class="mb-3">
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="nome"
+                                placeholder="Seu nome"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="email"
+                                placeholder="Seu e-mail"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <textarea
+                                class="form-control contact-textarea"
+                                id="mensagem"
+                                placeholder="Escreva sua mensagem aqui..."
+                                required></textarea>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="politicaPrivacidade">
+
+                            <label class="form-check-label text-secondary" for="politicaPrivacidade">
+                                Aceito a política de privacidade
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send-fill me-2"></i>
+                            Enviar mensagem
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
         </div>
-      </div>
-    </section>
+
+    </div>
+</section>

@@ -1,37 +1,76 @@
-<div class="container p-5">
-    <div class="row mt-5">
-        <div class="mx-auto border border-3 border-danger rounded p-5 bg-dark text-white">
-                
-                <h2 class="p-3">Acesso ao Sistema</h2>
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
 
-                <form action="<?php echo base_url("login/auth") ?>" method="POST">
-                    <div class="mb-3">
-                        <label for="login">
-                            <i class="bi bi-person"></i>
-                            Login
-                        </label>
-                        <input type="text" name="login" class="form-control" id="login">
-                    </div>
+    <div class="card login-card shadow-lg">
 
-                    <div class="mb-3">
-                        <label for="senha">
-                            <i class="bi bi-lock"></i>
-                            Senha
-                        </label>
-                        <input type="password" name="senha" class="form-control" id="senha">
-                    </div>
+        <div class="card-body p-5">
 
-                    <p class="text-center">
-                        <button type="submit" class="btn btn-lg btn-primary">
-                            Acessar
-                            <i class="bi bi-box-arrow-in-right"></i>
-                        </button>
-                    </p>
+            <div class="text-center mb-4">
 
-                </form>
+                <div class="login-logo mb-3">
+                    <i class="bi bi-scissors"></i>
+                </div>
+
+                <h2 class="text-white fw-bold">
+                    Easy Barber
+                </h2>
+
+                <p class="text-secondary mb-0">
+                    Acesse sua conta
+                </p>
 
             </div>
 
+            <form action="<?= base_url('login/auth') ?>" method="POST">
+
+                <div class="mb-3">
+
+                    <label for="login" class="form-label text-white">
+
+                        <i class="bi bi-person me-2"></i>
+                        E-mail
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="login"
+                        id="login"
+                        class="form-control"
+                        placeholder="Digite seu e-mail"
+                        required>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label for="senha" class="form-label text-white">
+
+                        <i class="bi bi-lock me-2"></i>
+                        Senha
+
+                    </label>
+
+                    <input
+                        type="password"
+                        name="senha"
+                        id="senha"
+                        class="form-control"
+                        placeholder="Digite sua senha"
+                        required>
+
+                </div>
+
+                <button type="submit" class="btn btn-login w-100">
+
+                    Entrar
+                    <i class="bi bi-arrow-right ms-2"></i>
+
+                </button>
+
+            </form>
+
         </div>
+
     </div>
+
 </div>

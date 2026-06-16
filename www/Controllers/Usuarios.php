@@ -100,6 +100,7 @@ class Usuarios
     // R - Função Listar todas os registros de uma tabela do BD
     function index()
     {
+        $classeBody = 'auth-page';
         $data = [];
 
         $data['usuarios'] = $this->usuarios

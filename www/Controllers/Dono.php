@@ -151,6 +151,85 @@ class Dono
         require 'Views/dono/equipe_form.php';
     }
 
+    public function equipe_edit()
+    {
+        if (
+            !isset($_SESSION['usuario_logado']) ||
+            $_SESSION['usuario_logado']->cargo != 'dono'
+        ) {
+            redirectPage(base_url('login'));
+            exit;
+        }
+
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            header('Location: ' . base_url('dono/equipe'));
+            exit;
+        }
+
+        $barbearia_id = $_SESSION['usuario_logado']->barbearia_id;
+
+        // Busca o membro da equipe garantindo que pertença à mesma barbearia e não seja o dono
+        $membro = $this->usuarios
+            ->select(null, "id = {$id} AND barbearia_id = {$barbearia_id} AND cargo <> 'dono'")
+            ->fetch(PDO::FETCH_OBJ);
+
+        if (!$membro) {
+            header('Location: ' . base_url('dono/equipe'));
+            exit;
+        }
+
+        $data = [];
+        $data['pagina'] = 'Editar Colaborador';
+
+        require 'Views/dono/equipe_edit.php';
+    }
+
+    public function equipe_update()
+    {
+        if (
+            !isset($_SESSION['usuario_logado']) ||
+            $_SESSION['usuario_logado']->cargo != 'dono'
+        ) {
+            redirectPage(base_url('login'));
+            exit;
+        }
+
+        $id = $_GET['id'] ?? null;
+        $requests = $_POST;
+
+        if ($id) {
+            $dadosAtualizados = [
+                'nome'            => trim($requests['nome']),
+                'email'           => trim($requests['email']),
+                'telefone'        => trim($requests['telefone']),
+                'cargo'           => $requests['cargo'],
+                'atende_clientes' => $requests['atende_clientes'],
+                'status'          => $requests['status']
+            ];
+
+            // Só atualiza a senha se o dono preencher o campo na edição
+            if (!empty($requests['senha'])) {
+                $dadosAtualizados['senha'] = md5($requests['senha']);
+            }
+
+            if ($this->usuarios->update("id = {$id}", $dadosAtualizados)) {
+                $_SESSION['msg'] = [
+                    'texto' => 'Colaborador atualizado com sucesso!',
+                    'color' => 'success'
+                ];
+            } else {
+                $_SESSION['msg'] = [
+                    'texto' => 'Erro ao atualizar colaborador.',
+                    'color' => 'danger'
+                ];
+            }
+        }
+
+        header('Location: ' . base_url('dono/equipe'));
+        exit;
+    }
     public function equipe_save()
     {
         if (
@@ -333,6 +412,68 @@ class Dono
         require 'Views/dono/servicos_form.php';
     }
 
+    public function servicos_edit()
+    {
+        if (
+            !isset($_SESSION['usuario_logado']) ||
+            $_SESSION['usuario_logado']->cargo != 'dono'
+        ) {
+            redirectPage(base_url('login'));
+            exit;
+        }
+
+        // Pega o ID do serviço vindo da URL (ex: ?id=X)
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            header('Location: ' . base_url('dono/servicos'));
+            exit;
+        }
+
+        $barbearia_id = $_SESSION['usuario_logado']->barbearia_id;
+
+        // Busca o serviço garantindo que ele pertença à barbearia do dono logado
+        $servico = $this->servicos
+            ->select(null, "id = {$id} AND barbearia_id = {$barbearia_id}")
+            ->fetch(PDO::FETCH_OBJ);
+
+        if (!$servico) {
+            header('Location: ' . base_url('dono/servicos'));
+            exit;
+        }
+
+        // Carrega a view de edição
+        require 'Views/dono/servicos_edit.php';
+    }
+
+    public function servicos_update()
+    {
+        if (
+            !isset($_SESSION['usuario_logado']) ||
+            $_SESSION['usuario_logado']->cargo != 'dono'
+        ) {
+            redirectPage(base_url('login'));
+            exit;
+        }
+
+        $id = $_GET['id'] ?? null;
+        $requests = $_POST;
+
+        if ($id) {
+            $dadosAtualizados = [
+                'nome'      => trim($requests['nome']),
+                'descricao' => trim($requests['descricao']),
+                'duracao'   => (int)$requests['duracao'],
+                'valor'     => str_replace(',', '.', $requests['valor'])
+            ];
+
+            // Atualiza usando a mesma estrutura do seu configuracoes_save
+            $this->servicos->update("id = {$id}", $dadosAtualizados);
+        }
+
+        header('Location: ' . base_url('dono/servicos'));
+        exit;
+    }
     public function servicos_save()
     {
         $requests = $_POST;

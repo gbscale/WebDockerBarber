@@ -91,7 +91,7 @@ if(isset($_SESSION['usuario_logado'])){
                                 <td>
 
                                     <a
-                                        href="<?= base_url('dono/servicos/edit/'.$servico->id) ?>"
+                                        href="<?= base_url('dono/servicos/edit?id='.$servico->id) ?>"
                                         class="btn btn-sm btn-warning">
 
                                         <i class="bi bi-pencil"></i>

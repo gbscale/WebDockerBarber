@@ -95,7 +95,7 @@ if (
                                 <td>
 
                                     <a
-                                        href="#"
+                                        href="<?= base_url('dono/equipe/edit?id=' . $membro->id) ?>"
                                         class="btn btn-sm btn-warning">
 
                                         <i class="bi bi-pencil"></i>
