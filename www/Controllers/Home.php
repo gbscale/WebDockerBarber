@@ -13,6 +13,7 @@ class Home{
     private $data;
 
     
+
     public function __construct(){
         // $this->cidades = new Conexao('cidades');
         $this->data['home'] = [];

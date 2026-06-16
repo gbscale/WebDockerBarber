@@ -2,7 +2,7 @@
 
 return [
 
-    '/' => ['Home', 'index'],
+    '/' => ['Home', 'projeto'],
     '/home' => ['Home', 'index'],
     '/projeto' => ['Home', 'index'],
     '/projeto/' => ['Home', 'index'],
@@ -10,26 +10,6 @@ return [
     '/home/planos' => ['Home', 'planos'],
     '/home/recursos' => ['Home', 'recursos'],
     '/home/contato' => ['Home', 'contato'],
-    
-
-
-    '/cidades' => ['Cidades', 'index'],
-    '/cidades/new' => ['Cidades', 'new'],
-    '/cidades/index' => ['Cidades', 'index'],
-    '/cidades/edit/{id}' => ['Cidades', 'edit'],
-    '/cidades/delete/{id}' => ['Cidades', 'delete'],
-    '/cidades/save' => ['Cidades', 'save'],
-    '/cidades/edit_save' => ['Cidades', 'edit_save'],
-    '/cidades/search' => ['Cidades', 'search'],
-
-    '/categorias' => ['Categorias', 'index'],
-    '/categorias/new' => ['Categorias', 'new'],
-    '/categorias/index' => ['Categorias', 'index'],
-    '/categorias/edit/{id}' => ['Categorias', 'edit'],
-    '/categorias/delete/{id}' => ['Categorias', 'delete'],
-    '/categorias/save' => ['Categorias', 'save'],
-    '/categorias/edit_save' => ['Categorias', 'edit_save'],
-    '/categorias/search' => ['Categorias', 'search'],
 
     '/usuarios' => ['Usuarios', 'index'],
     '/usuarios/new' => ['Usuarios', 'new'],
@@ -45,12 +25,21 @@ return [
     '/login/auth' => ['Login', 'auth'],
     '/login/logout' => ['Login', 'logout'],
     
-    '/admin' => ['Admin', 'index'],
-    '/admin/usuarios' => ['Admin', 'usuarios'],
-    '/admin/barbearias' => ['Admin', 'barbearias'],
-    '/admin/planos' => ['Admin', 'planos'],
-    '/admin/financeiro' => ['Admin', 'financeiro'],
-    '/admin/configuracoes' => ['Admin', 'configuracoes'],
+   
+    '/admin'                     => ['Admin', 'index'],
+    '/admin/usuarios'            => ['Admin', 'usuarios'],
+    '/admin/usuarios/edit'       => ['Admin', 'usuarios_edit'],   
+    '/admin/usuarios/update'     => ['Admin', 'usuarios_update'],
+    '/admin/barbearias'          => ['Admin', 'barbearias'],
+    '/admin/barbearias/new'      => ['Admin', 'barbearias_new'],    
+    '/admin/barbearias/create'   => ['Admin', 'barbearias_create'], 
+    '/admin/barbearias/view'     => ['Admin', 'barbearias_view'],   
+    '/admin/barbearias/edit'     => ['Admin', 'barbearias_edit'],   
+    '/admin/barbearias/update'   => ['Admin', 'barbearias_update'], 
+    '/admin/barbearias/status'   => ['Admin', 'barbearias_status'], 
+    '/admin/planos'              => ['Admin', 'planos'],
+    '/admin/financeiro'          => ['Admin', 'financeiro'],
+    '/admin/configuracoes'       => ['Admin', 'configuracoes'],
         
     '/dono' => ['Dono', 'index'],
     '/dono/equipe' => ['Dono', 'equipe'],
@@ -82,6 +71,4 @@ return [
     '/barbeiro/servicos/new' => ['Barbeiro', 'servicos_new'],
     '/barbeiro/servicos/save' => ['Barbeiro', 'servicos_save'],
 
-    '/user' => ['User', 'index'],
-    '/user/index' => ['User', 'index'],
 ];

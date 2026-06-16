@@ -1,192 +1,48 @@
-<?php 
-if(isset($_SESSION['usuario_logado'])){
-    if($_SESSION['usuario_logado']->cargo == 'barbeiro'){
-?>
-
-<?php
-if(
-    !isset($_SESSION['usuario_logado']) ||
-    $_SESSION['usuario_logado']->cargo != 'barbeiro'
-){
-    redirectPage(base_url('login'));
-    exit;
-}
-?>
-
 <div class="main-content">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-
-            <h1 class="text-white">
-                Novo Agendamento
-            </h1>
-
-            <p class="text-secondary">
-                Crie um agendamento manualmente.
-            </p>
-
-        </div>
-
-        <a href="<?= base_url('barbeiro/agenda') ?>"
-           class="btn btn-secondary">
-
-            <i class="bi bi-arrow-left"></i>
-            Voltar
-
-        </a>
-
+    <div class="mb-4">
+        <h1 class="text-white">Novo Agendamento</h1>
+        <p class="text-secondary">Insira os dados do cliente para reservar um horário na sua lista.</p>
     </div>
 
-    <form method="POST"
-          action="<?= base_url('barbeiro/agenda/save') ?>">
-
-        <div class="card dashboard-card">
-
-            <div class="card-body">
-
-                <div class="row">
-
-                    <!-- Cliente -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">Cliente</label>
-
-                        <input type="text"
-                               name="cliente_nome"
-                               class="form-control"
-                               required>
-
+    <div class="card bg-dark border-secondary text-white">
+        <div class="card-body">
+            <form method="POST" action="<?= base_url('barbeiro/agenda/save') ?>">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nome do Cliente</label>
+                        <input type="text" name="cliente_nome" class="form-control bg-black text-white border-secondary" required>
                     </div>
-
-                    <!-- Telefone -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">Telefone</label>
-
-                        <input type="text"
-                               name="cliente_telefone"
-                               class="form-control"
-                               required>
-
+                    <div class="col-md-6">
+                        <label class="form-label">Telefone do Cliente</label>
+                        <input type="text" name="cliente_telefone" class="form-control bg-black text-white border-secondary" placeholder="(00) 00000-0000" required>
                     </div>
-
-                    <!-- Barbeiro -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">Barbeiro</label>
-
-                        <select name="barbeiro_id"
-                                class="form-select"
-                                required>
-
-                            <option value="">Selecione</option>
-
-                            <?php foreach($barbeiros as $barbeiro): ?>
-                                <option value="<?= $barbeiro->id ?>">
-                                    <?= $barbeiro->nome ?>
-                                </option>
+                    <div class="col-md-4">
+                        <label class="form-label">Escolha o Serviço</label>
+                        <select name="servico_id" class="form-select bg-black text-white border-secondary" required>
+                            <option value="">Selecione...</option>
+                            <?php foreach ($servicos as $s): ?>
+                                <option value="<?= $s->id ?>"><?= $s->nome ?> (R$ <?= number_format($s->preco, 2, ',', '.') ?>)</option>
                             <?php endforeach; ?>
-
                         </select>
-
                     </div>
-
-                    <!-- Serviço -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">Serviço</label>
-
-                        <select name="servico_id"
-                                class="form-select"
-                                required>
-
-                            <option value="">Selecione</option>
-
-                            <?php foreach($servicos as $servico): ?>
-                                <option value="<?= $servico->id ?>">
-                                    <?= $servico->nome ?> -
-                                    R$ <?= number_format($servico->preco,2,',','.') ?>
-                                </option>
-                            <?php endforeach; ?>
-
-                        </select>
-
-                    </div>
-
-                    <!-- Data -->
-                    <div class="col-md-6 mb-3">
-
+                    <div class="col-md-4">
                         <label class="form-label">Data</label>
-
-                        <input type="date"
-                               name="data_agendamento"
-                               class="form-control"
-                               required>
-
+                        <input type="date" name="data_agendamento" class="form-control bg-black text-white border-secondary" value="<?= date('Y-m-d') ?>" required>
                     </div>
-
-                    <!-- Hora início (CORRETO) -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">Hora de início</label>
-
-                        <input type="time"
-                               name="hora_inicio"
-                               class="form-control"
-                               required>
-
+                    <div class="col-md-4">
+                        <label class="form-label">Horário de Início</label>
+                        <input type="time" name="hora_inicio" class="form-control bg-black text-white border-secondary" required>
                     </div>
-
-                    <!-- Valor (OBRIGATÓRIO no seu banco) -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">Valor (R$)</label>
-
-                        <input type="number"
-                               step="0.01"
-                               name="valor"
-                               class="form-control"
-                               required>
-
-                    </div>
-
-                    <!-- Observações -->
-                    <div class="col-12">
-
+                    <div class="col-md-12">
                         <label class="form-label">Observações</label>
-
-                        <textarea name="observacoes"
-                                  rows="4"
-                                  class="form-control"></textarea>
-
+                        <textarea name="observacoes" class="form-control bg-black text-white border-secondary" rows="3"></textarea>
                     </div>
-
                 </div>
-
-            </div>
-
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Agendar Horário</button>
+                    <a href="<?= base_url('barbeiro/agenda') ?>" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
         </div>
-
-        <button class="btn btn-primary mt-4">
-
-            <i class="bi bi-calendar-check"></i>
-            Salvar Agendamento
-
-        </button>
-
-    </form>
-
+    </div>
 </div>
-
-<?php
-    }else{
-        $msg = "Sem permissão de acesso!";
-        redirectPage(base_url('login'));
-    }
-}else{
-    $msg = "Sem permissão de acesso!";
-        redirectPage(base_url('login'));
-
-}

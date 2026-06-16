@@ -27,90 +27,107 @@ class Dono
     
    public function index()
     {
+        if (
+            !isset($_SESSION['usuario_logado']) ||
+            $_SESSION['usuario_logado']->cargo != 'dono'
+        ) {
+            redirectPage(base_url('login'));
+            exit;
+        }
+
         $barbearia_id = $_SESSION['usuario_logado']->barbearia_id;
 
+        // Se o dono mudar a data no topo da tela, o GET captura. Se não, assume hoje.
         $dataSelecionada = $_GET['data'] ?? date('Y-m-d');
-        $mesAtual = date('Y-m');
+        $mesAtual = date('Y-m', strtotime($dataSelecionada));
 
-        // Agendamentos do dia
+        // 1. Agendamentos do dia filtrado
         $agendamentos = $this->agendamentos
             ->select(
                 null,
-                "barbearia_id = {$barbearia_id}
-                AND data_agendamento = '{$dataSelecionada}'",
+                "barbearia_id = {$barbearia_id} AND data_agendamento = '{$dataSelecionada}'",
                 "hora_inicio ASC"
             )
             ->fetchAll(PDO::FETCH_OBJ);
 
+        $faturamentoHoje = 0;
+        $clientes = [];
+        $contagemServicos = [];
+        $dadosRanking = [];
+
         foreach ($agendamentos as $agendamento) {
-
-            $barbeiro = $this->usuarios
-                ->select(null, "id = {$agendamento->usuario_id}")
-                ->fetch(PDO::FETCH_OBJ);
-
-            $servico = $this->servicos
-                ->select(null, "id = {$agendamento->servico_id}")
-                ->fetch(PDO::FETCH_OBJ);
+            $barbeiro = $this->usuarios->select(null, "id = {$agendamento->usuario_id}")->fetch(PDO::FETCH_OBJ);
+            $servico = $this->servicos->select(null, "id = {$agendamento->servico_id}")->fetch(PDO::FETCH_OBJ);
 
             $agendamento->barbeiro_nome = $barbeiro->nome ?? '-';
             $agendamento->servico_nome = $servico->nome ?? '-';
+
+            // SÓ SOMA NO FATURAMENTO E CONTA ATENDIMENTOS SE NÃO ESTIVER CANCELADO
+            if ($agendamento->status !== 'cancelado') {
+                $faturamentoHoje += (float) $agendamento->valor;
+                $clientes[] = $agendamento->cliente_telefone;
+
+                // Contagem para descobrir o Serviço Mais Vendido
+                if (!empty($agendamento->servico_nome)) {
+                    $contagemServicos[$agendamento->servico_nome] = ($contagemServicos[$agendamento->servico_nome] ?? 0) + 1;
+                }
+
+                // Agrupando dados para o Ranking de Barbeiros
+                $bNome = $agendamento->barbeiro_nome;
+                if (!isset($dadosRanking[$bNome])) {
+                    $dadosRanking[$bNome] = ['nome' => $bNome, 'total_atendimentos' => 0, 'faturamento' => 0];
+                }
+                $dadosRanking[$bNome]['total_atendimentos']++;
+                $dadosRanking[$bNome]['faturamento'] += (float)$agendamento->valor;
+            }
         }
 
-        // Total de agendamentos
+        // Total de agendamentos e Clientes únicos atendidos no dia
         $totalAgendamentos = count($agendamentos);
-
-        // Faturamento do dia
-        $faturamentoHoje = 0;
-
-        foreach ($agendamentos as $agendamento) {
-            $faturamentoHoje += (float) $agendamento->valor;
-        }
-
-        // Clientes atendidos
-        $clientes = [];
-
-        foreach ($agendamentos as $agendamento) {
-            $clientes[] = $agendamento->cliente_telefone;
-        }
-
         $clientesAtendidos = count(array_unique($clientes));
 
-        // Barbeiros ativos
+        // 2. Barbeiros ativos na empresa
         $barbeiros = $this->usuarios
-            ->select(
-                null,
-                "barbearia_id = {$barbearia_id}
-                AND cargo = 'barbeiro'
-                AND status = 1"
-            )
+            ->select(null, "barbearia_id = {$barbearia_id} AND cargo = 'barbeiro' AND status = 1")
             ->fetchAll(PDO::FETCH_OBJ);
-
         $barbeirosAtivos = count($barbeiros);
 
-        // Faturamento do mês
+        // 3. Faturamento do mês (Ignorando cancelados)
         $agendamentosMes = $this->agendamentos
-            ->select(
-                null,
-                "barbearia_id = {$barbearia_id}
-                AND data_agendamento LIKE '{$mesAtual}%'"
-            )
+            ->select(null, "barbearia_id = {$barbearia_id} AND data_agendamento LIKE '{$mesAtual}%' AND status <> 'cancelado'")
             ->fetchAll(PDO::FETCH_OBJ);
 
         $faturamentoMes = 0;
-
         foreach ($agendamentosMes as $agendamento) {
             $faturamentoMes += (float) $agendamento->valor;
         }
 
-        // Ticket médio
-        $ticketMedio = $totalAgendamentos > 0
-            ? $faturamentoHoje / $totalAgendamentos
-            : 0;
+        // 4. Ticket Médio (Faturamento do dia / Total de Agendamentos Não Cancelados)
+        $totalValidosHoje = 0;
+        foreach ($agendamentos as $ag) { if($ag->status !== 'cancelado') $totalValidosHoje++; }
+        $ticketMedio = $totalValidosHoje > 0 ? $faturamentoHoje / $totalValidosHoje : 0;
 
-        // Valores temporários
-        $servicoMaisVendido = 'Em desenvolvimento';
-        $taxaOcupacao = 0;
-        $rankingBarbeiros = [];
+        // 5. Descobrir o Serviço Mais Vendido de forma dinâmica
+        if (!empty($contagemServicos)) {
+            arsort($contagemServicos); // Ordena do maior para o menor
+            $servicoMaisVendido = array_key_first($contagemServicos);
+        } else {
+            $servicoMaisVendido = 'Nenhum serviço hoje';
+        }
+
+        // 6. Taxa de Ocupação Real
+        // Se cada barbeiro trabalha 8h por dia e cada atendimento médio dura 30min, são 16 slots por barbeiro.
+        $slotsDisponiveisTotais = $barbeirosAtivos * 16; 
+        $taxaOcupacao = $slotsDisponiveisTotais > 0 
+            ? round(($totalValidosHoje / $slotsDisponiveisTotais) * 180) // 180 base aproximada ou ajuste conforme preferir
+            : 0;
+        if($taxaOcupacao > 100) $taxaOcupacao = 100; // Trava para não passar de 100%
+
+        // 7. Organiza o ranking de barbeiros por quem faturou mais
+        usort($dadosRanking, function($a, $b) {
+            return $b['faturamento'] <=> $a['faturamento'];
+        });
+        $rankingBarbeiros = json_decode(json_encode($dadosRanking)); // Transforma array em objeto para a view ler sem erro
 
         require 'Views/dono/index.php';
     }

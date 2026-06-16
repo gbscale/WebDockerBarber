@@ -20,14 +20,13 @@ if(isset($_SESSION['usuario_logado'])){
 
     </div>
 
-    <form method="GET">
-
+    <form method="GET" id="form-filtro-dash">
         <input
             type="date"
             name="data"
             value="<?= $dataSelecionada ?? date('Y-m-d') ?>"
-            class="form-control">
-
+            class="form-control"
+            onchange="document.getElementById('form-filtro-dash').submit();">
     </form>
 
 </div>

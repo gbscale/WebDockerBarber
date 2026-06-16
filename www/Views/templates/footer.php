@@ -1,46 +1,18 @@
-<!-- Abre footer -->
 <div class="clearfix"></div>
-            <footer class="bg-dark text-center text-white">
-                <!-- Grid container -->
-                <div class="container p-4 pb-0">
-                    <!-- Section: Social media -->
-                    <section class="mb-4">
-                        <!-- Facebook -->
-                        
-                        <a class="btn btn-outline-light btn-floating m-1 btn-circle "
-                            href="#" role="button"><i class="bi bi-facebook"></i></a>
+<footer class="bg-black text-center text-white border-top border-secondary py-4 mt-auto">
+    <div class="container">
+        <!-- Ícones Redes Sociais -->
+        <section class="mb-3">
+            <a class="btn btn-outline-secondary btn-sm rounded-circle m-1 text-white border-secondary" href="#!" role="button"><i class="bi bi-facebook"></i></a>
+            <a class="btn btn-outline-secondary btn-sm rounded-circle m-1 text-white border-secondary" href="#!" role="button"><i class="bi bi-twitter-x"></i></a>
+            <a class="btn btn-outline-secondary btn-sm rounded-circle m-1 text-white border-secondary" href="#!" role="button"><i class="bi bi-instagram"></i></a>
+            <a class="btn btn-outline-secondary btn-sm rounded-circle m-1 text-white border-secondary" href="#!" role="button"><i class="bi bi-linkedin"></i></a>
+        </section>
+    </div>
 
-                        <!-- Twitter -->
-                        <a class="btn btn-outline-light btn-floating m-1 rounded-circle"
-                            href="#!" role="button"><i class="bi bi-twitter"></i></a>
-
-                        <!-- Google -->
-                        <a class="btn btn-outline-light btn-floating m-1"
-                            href="#!" role="button"><i class="bi bi-google"></i></a>
-
-                        <!-- Instagram -->
-                        <a class="btn btn-outline-light btn-floating m-1"
-                            href="#!" role="button"><i class="bi bi-instagram"></i></a>
-
-                        <!-- Linkedin -->
-                        <a class="btn btn-outline-light btn-floating m-1"
-                            href="#!" role="button"><i
-                                class="bi bi-linkedin"></i></a>
-
-                        <!-- Github -->
-                        <a class="btn btn-outline-light btn-floating m-1"
-                            href="#!" role="button"><i class="bi bi-github"></i></a>
-                    </section>
-                    <!-- Section: Social media -->
-                </div>
-                <!-- Grid container -->
-
-                <!-- Copyright -->
-                <div class="text-center p-3"
-                    style="background-color: rgba(0, 0, 0, 0.2);">
-                    © 2026 Copyright: Todos os direitos reservado a
-                    <a class="text-white" href="http://vilsonsoares.com.br/"> Vilson Soares de Siqueira </a>
-                </div>
-                <!-- Copyright -->
-            </footer>
-            <!-- Fecha footer -->
+    <!-- Copyright -->
+    <div class="text-center p-2 text-secondary small" style="background-color: rgba(0, 0, 0, 0.4);">
+        © 2026 Copyright: Todos os direitos reservados a 
+        <a class="text-danger text-decoration-none fw-bold" href="http://vilsonsoares.com.br/" target="_blank">Vilson Soares de Siqueira</a>
+    </div>
+</footer>
