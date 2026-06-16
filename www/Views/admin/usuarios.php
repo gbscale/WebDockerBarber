@@ -7,8 +7,17 @@
 
     <div class="card bg-dark border-secondary">
         <div class="card-body p-4">
+            
+            <!-- 🌟 NOVO: BARRA DE BUSCA DINÂMICA -->
+            <div class="d-flex justify-content-end mb-4">
+                <div class="input-group" style="max-width: 400px;">
+                    <span class="input-group-text bg-black border-secondary text-secondary"><i class="bi bi-search"></i></span>
+                    <input type="text" id="input-busca-usuario" class="form-control bg-black text-white border-secondary" placeholder="Buscar por nome, e-mail ou barbearia...">
+                </div>
+            </div>
+
             <div class="table-responsive">
-                <table class="table table-dark table-hover align-middle mb-0">
+                <table class="table table-dark table-hover align-middle mb-0" id="tabela-usuarios">
                     <thead>
                         <tr class="text-secondary border-secondary">
                             <th>Nome</th>
@@ -22,10 +31,11 @@
                     <tbody>
                         <?php if(!empty($usuarios)): ?>
                             <?php foreach($usuarios as $u): ?>
-                                <tr class="border-secondary">
-                                    <td class="fw-bold text-white"><?= htmlspecialchars($u->nome) ?></td>
-                                    <td class="text-white-50"><?= htmlspecialchars($u->email) ?></td>
-                                    <td class="text-info fw-bold"><?= htmlspecialchars($u->barbearia_nome ?? 'Administração Master') ?></td>
+                                <!-- 🌟 ADICIONADO A CLASSE 'linha-usuario' PARA O FILTRO JS -->
+                                <tr class="border-secondary linha-usuario">
+                                    <td class="fw-bold text-white nome-txt"><?= htmlspecialchars($u->nome) ?></td>
+                                    <td class="text-white-50 email-txt"><?= htmlspecialchars($u->email) ?></td>
+                                    <td class="text-info fw-bold barbearia-txt"><?= htmlspecialchars($u->barbearia_nome ?? 'Administração Master') ?></td>
                                     <td>
                                         <span class="badge <?= $u->cargo == 'admin' ? 'bg-danger' : ($u->cargo == 'dono' ? 'bg-warning text-dark' : 'bg-secondary') ?> text-uppercase">
                                             <?= $u->cargo ?>
@@ -53,7 +63,29 @@
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
-
 </div>
+
+<!-- 🌟 NOVO: SCRIPT DE FILTRO EM TEMPO REAL -->
+<script>
+document.getElementById('input-busca-usuario').addEventListener('keyup', function() {
+    let filtro = this.value.toLowerCase();
+    let linhas = document.querySelectorAll('#tabela-usuarios .linha-usuario');
+    
+    linhas.forEach(linha => {
+        // Pega o texto das colunas chave para cruzar os dados da busca
+        let nome = linha.querySelector('.nome-txt').innerText.toLowerCase();
+        let email = linha.querySelector('.email-txt').innerText.toLowerCase();
+        let barbearia = linha.querySelector('.barbearia-txt').innerText.toLowerCase();
+        
+        // Se o que o admin digitou bater com qualquer um desses dados, a linha continua visível
+        if(nome.includes(filtro) || email.includes(filtro) || barbearia.includes(filtro)) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+});
+</script>

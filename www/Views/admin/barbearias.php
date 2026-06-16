@@ -12,8 +12,17 @@
 
     <div class="card bg-dark border-secondary">
         <div class="card-body p-4">
+            
+            <!-- BARRA DE BUSCA DINÂMICA (Sem mexer no Controller) -->
+            <div class="d-flex justify-content-end mb-4">
+                <div class="input-group" style="max-width: 400px;">
+                    <span class="input-group-text bg-black border-secondary text-secondary"><i class="bi bi-search"></i></span>
+                    <input type="text" id="input-busca-barbearia-lista" class="form-control bg-black text-white border-secondary" placeholder="Buscar por nome ou plano...">
+                </div>
+            </div>
+
             <div class="table-responsive">
-                <table class="table table-dark table-hover align-middle mb-0">
+                <table class="table table-dark table-hover align-middle mb-0" id="tabela-barbearias-lista">
                     <thead>
                         <tr class="text-secondary border-secondary">
                             <th>ID</th>
@@ -26,13 +35,21 @@
                     <tbody>
                         <?php if(!empty($barbearias)): ?>
                             <?php foreach($barbearias as $b): ?>
-                                <tr class="border-secondary">
+                                <!-- Adicionado a classe 'linha-barbearia' para o JavaScript encontrar -->
+                                <tr class="border-secondary linha-barbearia">
                                     <td class="text-secondary">#<?= $b->id ?></td>
-                                    <td class="fw-bold text-white"><?= htmlspecialchars($b->nome) ?></td>
+                                    <td class="fw-bold text-white name-txt"><?= htmlspecialchars($b->nome) ?></td>
                                     <td>
-                                        <span class="badge bg-black border border-primary text-primary text-uppercase px-2 py-1">
-                                            <?= htmlspecialchars($b->plano) ?>
-                                        </span>
+                                        <!-- Atualizado para plano_nome (vindo do JOIN do banco) -->
+                                        <?php if(!empty($b->plano_nome)): ?>
+                                            <span class="badge bg-black border border-primary text-primary text-uppercase px-2 py-1 plano-txt">
+                                                <?= htmlspecialchars($b->plano_nome) ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge bg-black border border-secondary text-secondary text-uppercase px-2 py-1 plano-txt">
+                                                Sem Plano Activo
+                                            </span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <?php if($b->status == 1): ?>
@@ -64,3 +81,22 @@
     </div>
 
 </div>
+
+<!-- SCRIPT DE FILTRO EM TEMPO REAL -->
+<script>
+document.getElementById('input-busca-barbearia-lista').addEventListener('keyup', function() {
+    let filtro = this.value.toLowerCase();
+    let linhas = document.querySelectorAll('#tabela-barbearias-lista .linha-barbearia');
+    
+    linhas.forEach(linha => {
+        let nome = linha.querySelector('.name-txt').innerText.toLowerCase();
+        let plano = linha.querySelector('.plano-txt').innerText.toLowerCase();
+        
+        if(nome.includes(filtro) || plano.includes(filtro)) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+});
+</script>

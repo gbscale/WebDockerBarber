@@ -6,7 +6,7 @@
         <div class="logo mb-4 text-center">
             <img src="<?= base_url('public/assets/images/easy.png') ?>" alt="Easy Barber" width="140" class="bg-transparent img-fluid" style="background: transparent !important;">
             <span class="badge bg-danger text-uppercase d-block mt-2 mx-auto border border-dark" style="max-width: 120px; font-size: 10px; letter-spacing: 1px;">
-                Administrador
+                Admin
             </span>
         </div>
 
@@ -62,22 +62,30 @@
 
 </aside>
 
-<!-- Script de Destaque Automático de Menu Ativo -->
+<!-- Script de Destaque Automático de Menu Ativo (Otimizado) -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const urlAtual = window.location.href;
+    // 🌟 Melhoria 1: Removemos query strings ou hashes (como ?id=1 ou #topo) para a comparação ser exata
+    const urlAtual = window.location.href.split('?')[0].split('#')[0].replace(/\/$/, ""); 
     const linksMenu = document.querySelectorAll('#menu-master-admin .nav-link');
+    const urlBaseAdmin = "<?= base_url('admin') ?>".replace(/\/$/, "");
+
+    let algunLinkAtivado = false;
 
     linksMenu.forEach(link => {
         link.classList.remove('active');
+        const hrefLink = link.href.replace(/\/$/, "");
         
-        if (urlAtual === link.href || (urlAtual.includes(link.href) && link.href !== "<?= base_url('admin') ?>")) {
+        // Evita marcar a home por engano quando estiver em sub-rotas
+        if (hrefLink !== urlBaseAdmin && urlAtual.startsWith(hrefLink)) {
             link.classList.add('active');
+            algunLinkAtivado = true;
         }
     });
 
-    if (urlAtual === "<?= base_url('admin') ?>/" || urlAtual === "<?= base_url('admin') ?>") {
-        linksMenu[0].classList.add('active');
+    // 🌟 Melhoria 2: Se nenhuma sub-rota foi ativada e estamos na raiz do admin, acende o Painel Geral
+    if (!algunLinkAtivado && (urlAtual === urlBaseAdmin || urlAtual === urlBaseAdmin + '/index.php')) {
+        if(linksMenu[0]) linksMenu[0].classList.add('active');
     }
 });
 </script>

@@ -38,6 +38,8 @@ return [
     '/admin/barbearias/update'   => ['Admin', 'barbearias_update'], 
     '/admin/barbearias/status'   => ['Admin', 'barbearias_status'], 
     '/admin/planos'              => ['Admin', 'planos'],
+    '/admin/planos/save'         => ['Admin', 'planos_save'],
+    '/admin/planos/delete'       => ['Admin', 'planos_delete'],
     '/admin/financeiro'          => ['Admin', 'financeiro'],
     '/admin/configuracoes'       => ['Admin', 'configuracoes'],
         

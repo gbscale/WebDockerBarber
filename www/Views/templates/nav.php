@@ -27,7 +27,7 @@
                     <a
                         class="nav-link active"
                         aria-current="page"
-                        href="<?= base_url('/') ?>">
+                        href="<?= base_url('login/logout') ?>">
 
                         <i class="bi bi-house-fill"></i>
                         Início

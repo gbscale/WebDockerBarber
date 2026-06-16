@@ -10,6 +10,7 @@
         </a>
     </div>
 
+    <!-- CARDS DE MÉTRICAS -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="card bg-dark border-secondary shadow-sm h-100">
@@ -60,6 +61,7 @@
         </div>
     </div>
 
+    <!-- LISTAGEM DE TENANTS -->
     <div class="card bg-dark border-secondary shadow-sm">
         <div class="card-body p-4">
             
@@ -81,7 +83,7 @@
                             <th class="py-3">Nome da Barbearia</th>
                             <th class="py-3">Responsável Legal</th>
                             <th class="py-3">Plano Contratado</th>
-                            <th class="py-3">Funcionários</th>
+                            <th class="py-3 text-center">Funcionários</th>
                             <th class="py-3">Status da Licença</th>
                             <th class="py-3 text-center" width="180">Ações de Controle</th>
                         </tr>
@@ -94,15 +96,21 @@
                                     <?= htmlspecialchars($barbearia->nome) ?>
                                 </td>
                                 <td class="text-white-50">
-                                    <?= htmlspecialchars($barbearia->responsavel) ?>
+                                    <?= htmlspecialchars($barbearia->responsavel_nome ?? 'Não identificado') ?>
                                 </td>
                                 <td>
-                                    <span class="badge bg-black border border-primary text-primary text-uppercase px-2.5 py-1.5" style="font-size: 11px;">
-                                        <i class="bi bi-box-semibold me-1"></i><?= htmlspecialchars($barbearia->plano) ?>
-                                    </span>
+                                    <?php if(!empty($barbearia->plano_nome)): ?>
+                                        <span class="badge bg-black border border-primary text-primary text-uppercase px-2.5 py-1.5" style="font-size: 11px;">
+                                            <i class="bi bi-box-semibold me-1"></i><?= htmlspecialchars($barbearia->plano_nome) ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge bg-black border border-secondary text-secondary text-uppercase px-2.5 py-1.5" style="font-size: 11px;">
+                                            <i class="bi bi-x-circle me-1"></i>Nenhum Plano
+                                        </span>
+                                    <?php endif; ?>
                                 </td>
-                                <td class="fw-bold text-info ps-4">
-                                    <?= $barbearia->total_usuarios ?? 0 ?>
+                                <td class="fw-bold text-info text-center">
+                                    <?= $barbearia->total_funcionarios ?>
                                 </td>
                                 <td>
                                     <?php if($barbearia->status == 1): ?>

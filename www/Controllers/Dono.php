@@ -14,6 +14,7 @@ class Dono
     private $servicos;
     private $agendamentos;
     private $barbearias;
+    private $planos;
 
 
     public function __construct()
@@ -22,6 +23,7 @@ class Dono
         $this->servicos = new Conexao('servicos');
         $this->agendamentos = new Conexao('agendamentos');
         $this->barbearias = new Conexao('barbearias');
+        $this->planos = new Conexao('planos');
 
     }
     
@@ -573,56 +575,54 @@ class Dono
 
     public function configuracoes()
     {
-        $usuario = $this->usuarios
-            ->select(
-                null,
-                "id = {$_SESSION['usuario_logado']->id}"
-            )
-            ->fetch(PDO::FETCH_OBJ);
+        if (!isset($_SESSION['usuario_logado']) || $_SESSION['usuario_logado']->cargo != 'dono') {
+            redirectPage(base_url('login'));
+            exit;
+        }
 
-        $barbearia = $this->barbearias
-            ->select(
-                null,
-                "id = {$_SESSION['usuario_logado']->barbearia_id}"
-            )
-            ->fetch(PDO::FETCH_OBJ);
+        // 1. Busca dados do usuário
+        $usuario = $this->usuarios->select(null, "id = {$_SESSION['usuario_logado']->id}")->fetch(PDO::FETCH_OBJ);
+
+        // 2. Busca dados da barbearia
+        $barbearia = $this->barbearias->select(null, "id = {$_SESSION['usuario_logado']->barbearia_id}")->fetch(PDO::FETCH_OBJ);
+
+        // 3. Busca TODOS os planos disponíveis criados pelo Admin Master
+        $planosDisponiveis = $this->planos->select(null, null, "preco ASC")->fetchAll(PDO::FETCH_OBJ);
 
         require 'Views/dono/configuracoes.php';
     }
 
     public function configuracoes_save()
     {
+        if (!isset($_SESSION['usuario_logado']) || $_SESSION['usuario_logado']->cargo != 'dono') {
+            redirectPage(base_url('login'));
+            exit;
+        }
+
         $request = $_POST;
 
+        // Atualiza dados da barbearia (incluindo a troca de plano se ele mudou o select)
         $dadosBarbearia = [
-
-            'nome' => trim($request['nome_barbearia']),
+            'nome'     => trim($request['nome_barbearia']),
             'telefone' => trim($request['telefone_barbearia']),
-            'email' => trim($request['email_barbearia'])
-
+            'email'    => trim($request['email_barbearia']),
+            'plano_id' => (int)$request['plano_id'] // <--- Captura o plano selecionado
         ];
 
-        $this->barbearias->update(
-            "id = {$_SESSION['usuario_logado']->barbearia_id}",
-            $dadosBarbearia
-        );
+        $this->barbearias->update("id = {$_SESSION['usuario_logado']->barbearia_id}", $dadosBarbearia);
 
+        // Atualiza dados do usuário
         $dadosUsuario = [
-
-            'nome' => trim($request['nome']),
-            'email' => trim($request['email']),
+            'nome'     => trim($request['nome']),
+            'email'    => trim($request['email']),
             'telefone' => trim($request['telefone'])
-
         ];
 
         if (!empty($request['senha'])) {
             $dadosUsuario['senha'] = md5($request['senha']);
         }
 
-        $this->usuarios->update(
-            "id = {$_SESSION['usuario_logado']->id}",
-            $dadosUsuario
-        );
+        $this->usuarios->update("id = {$_SESSION['usuario_logado']->id}", $dadosUsuario);
 
         $_SESSION['msg'] = [
             'texto' => 'Configurações atualizadas com sucesso!',

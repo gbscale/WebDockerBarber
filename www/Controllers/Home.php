@@ -11,15 +11,13 @@ class Home{
 
     private $home;
     private $data;
-
-    
+    private $planosModel; // 🌟 Nova propriedade para ler a tabela de planos
 
     public function __construct(){
-        // $this->cidades = new Conexao('cidades');
         $this->data['home'] = [];
+        // 🌟 Inicializa a conexão com a tabela de planos
+        $this->planosModel = new Conexao('planos');
     }
-
-  
 
     public function index(){
         $this->data['home'] = "Home";
@@ -29,13 +27,17 @@ class Home{
         return view('home/index',$this->data);
     }
 
-
+    // 🌟 ATUALIZADO: Agora busca os planos reais do banco para mandar para a vitrine
     public function planos(){
         $this->data['home'] = "Planos";
         $this->data['pagina'] = 'Home/planos';
         $this->data['msg'] = ''; 
         $this->data['op'] = 'listar';
-        return view('home/planos',$this->data);
+        
+        // Busca os planos ordenados pelo preço (do mais barato ao mais caro)
+        $this->data['planos'] = $this->planosModel->execute("SELECT * FROM planos ORDER BY preco ASC")->fetchAll(PDO::FETCH_OBJ);
+
+        return view('home/planos', $this->data);
     }
 
     public function recursos(){
@@ -53,10 +55,4 @@ class Home{
         $this->data['op'] = 'listar';
         return view('home/contato',$this->data);
     }
-    
 }
-
-
-// $dados = new Home();
-// print_r($dados->index());
-
