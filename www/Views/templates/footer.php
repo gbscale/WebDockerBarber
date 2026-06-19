@@ -11,8 +11,4 @@
     </div>
 
     <!-- Copyright -->
-    <div class="text-center p-2 text-secondary small" style="background-color: rgba(0, 0, 0, 0.4);">
-        © 2026 Copyright: Todos os direitos reservados a 
-        <a class="text-danger text-decoration-none fw-bold" href="http://vilsonsoares.com.br/" target="_blank">Vilson Soares de Siqueira</a>
-    </div>
 </footer>
