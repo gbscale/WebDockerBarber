@@ -8,26 +8,38 @@ Este repositório contém a infraestrutura e os arquivos de configuração para 
 A solução foi estruturada utilizando uma abordagem micro-segmentada, separando a camada de proxy/segurança, o servidor de aplicação web e o banco de dados em containers dedicados, interconectados por uma rede isolada.
 
 
-
-┌────────────────────────────────────────────────────────┐
-│                      REDE PÚBLICA                      │
-└───────────────────────────┬────────────────────────────┘
-│ (Portas 80 / 443)
-▼
-┌─────────────────────────┐
-│   Nginx Proxy Manager   │
-└────────────┬────────────┘
-│ (Rede Interna: app_net)
-▼
-┌─────────────────────────┐
-│    Servidor Apache      │ ◄──── [ Armazenamento NFS ]
-└────────────┬────────────┘       (Persistência de Mídia)
-│
-▼
-┌─────────────────────────┐
-│        MySQL 8.0        │
-└─────────────────────────┘
-
+┌───────────────────────────────┐
+│          REDE PÚBLICA         │
+│         (Portas 80/443)       │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│  Gerenciador de Proxy Nginx   │
+│  • SSL/TLS                    │
+│  • Balanceamento de carga     │
+│  • Controle de acesso         │
+└───────────────┬───────────────┘
+                │
+        Rede interna: app_net
+                │
+                ▼
+┌───────────────────────────────┐
+│       Servidor Apache         │◄──────────┐
+│  • Aplicação Web              │           │
+│  • Processamento PHP          │           │
+└───────────────┬───────────────┘           │
+                │                           │
+                ▼                           │
+┌───────────────────────────────┐           │
+│           MySQL 8.0           │           │
+│  • Persistência dos dados     │           │
+└───────────────────────────────┘           │
+                                            │
+                          ┌─────────────────▼─────────────────┐
+                          │       Armazenamento NFS           │
+                          │     Persistência de mídias        │
+                          └───────────────────────────────────┘
 
 
 
